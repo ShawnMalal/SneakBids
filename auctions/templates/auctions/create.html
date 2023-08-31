@@ -1,0 +1,38 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+<h1>Create Your Own Listing Here</h1>
+<div class="container">
+    <form action="{% url 'create' %}" method="POST">
+        {% csrf_token %}
+        <div class="form-group">
+          <label>Shoe Name:</label>
+          <input type="text" class="form-control" placeholder="Name of the shoe..." name="title" required>
+        </div>
+        
+        <div class="form-group">
+            <label>Description:</label>
+            <textarea class="form-control" rows="5" placeholder="Description..." name="description" required></textarea>
+        </div>
+        <div class="form-group">
+            <label>Category:</label>
+            <select class="form-control" name="category" required>
+                {% for category in categories %} 
+                    <option value="{{ category }}"> {{ category }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="form-group">
+            <label>Starting Bid:</label>
+            <input type="number" class="form-control" placeholder="Starting bid..." name="price" required>
+        </div>
+        
+        <div class="form-group">
+            <label>Image link (optional):</label>
+            <input type="text" class="form-control" placeholder="https://nike-air-max.jpg..." name="link">
+        </div>
+
+        <button class="btn btn-outline-info" type="submit">Create</button>
+    </form>
+</div>
+{% endblock %}
