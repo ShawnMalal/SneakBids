@@ -1,10 +1,9 @@
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.urls import reverse
 from .models import User, Category, Listings
-
 from .models import User
 
 
@@ -112,4 +111,39 @@ def displayBrand(request):
             "listings": activeListings,
             "categories": allCategories
         })
+
+def buy(request, id): 
+    listingData = Listings.objects.get(pk=id)
+    isListingInWatch = request.user in listingData.watchlist.all()
+    return render(request, "auctions/buy.html", { 
+        "listing": listingData,
+        "isListingInWatch": isListingInWatch
+    })
+
+
+def bid(request, id): 
+    return render(request, "auctions/bid.html")
+
+
+def removeFromWatch(request, id):
+    listingData = Listings.objects.get(pk=id)
+    currentUser = request.user
+    listingData.watchlist.remove(currentUser)
+    return HttpResponseRedirect(reverse("buy",args=(id, )))
+
+
+def addToWatch(request, id): 
+    listingData = Listings.objects.get(pk=id)
+    currentUser = request.user
+    listingData.watchlist.add(currentUser)
+    return HttpResponseRedirect(reverse("buy",args=(id, )))
+
+def displayWatchlist(request): 
+    currentUser = request.user
+    listings = currentUser.listingWatchlist.all()
+    return render (request, "auctions/displayWatchlist.html", { 
+        "listings": listings
+    })
+
+
         
